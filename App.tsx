@@ -1,101 +1,76 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {SafeAreaView, FlatList, View, Text, StyleSheet} from 'react-native';
 import {
   GAMBannerAd,
   BannerAdSize,
   TestIds,
 } from 'react-native-google-mobile-ads';
+import {fakeData} from './fakeData';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Card = ({name, address}: any) => (
+  <View style={styles.card}>
+    <Text style={styles.name}>{name}</Text>
+    <Text style={styles.address}>{address}</Text>
+  </View>
+);
+const AdCard = () => (
+  <View style={styles.adStyle}>
+    <GAMBannerAd
+      unitId={TestIds.GAM_BANNER} //test ad id can be replaced with the actual id
+      sizes={[BannerAdSize.MEDIUM_RECTANGLE]}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+    />
+  </View>
+);
+const App = () => {
+  // const adUnitId = 'ca-app-pub-2230858590016652/9975408115'; //actual ad id
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // Function to render each item (card or ad)
+  const renderItem = ({item, index}: any) => {
+    if ((index + 1) % 8 === 0) {
+      // If the index is a multiple of 8 (every 7 cards), render the ad
+      return <AdCard />;
+    } else {
+      // Otherwise, render the card with data
+      return <Card name={item.name} address={item.address} />;
+    }
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <GAMBannerAd
-        unitId={TestIds.BANNER}
-        sizes={[BannerAdSize.FULL_BANNER]}
-        requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
-        }}
-      />
+    <SafeAreaView>
+      <View style={{padding: 16}}>
+        <FlatList
+          data={fakeData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()} // Add this keyExtractor
+        />
+      </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  card: {
+    height: 80,
+    width: '100%',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  address: {
+    fontSize: 14,
+    color: '#888',
   },
-  highlight: {
-    fontWeight: '700',
+  adStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
