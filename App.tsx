@@ -1,40 +1,20 @@
 import React from 'react';
-import {SafeAreaView, FlatList, View, Text, StyleSheet} from 'react-native';
-import {
-  GAMBannerAd,
-  BannerAdSize,
-  TestIds,
-} from 'react-native-google-mobile-ads';
+import {SafeAreaView, FlatList, View} from 'react-native';
 import {fakeData} from './fakeData';
+import {Card, CardProps} from './components/Card';
+import {AdCard} from './components/AdCard';
 
-const Card = ({name, address}: any) => (
-  <View style={styles.card}>
-    <Text style={styles.name}>{name}</Text>
-    <Text style={styles.address}>{address}</Text>
-  </View>
-);
-const AdCard = () => (
-  <View style={styles.adStyle}>
-    <GAMBannerAd
-      unitId={TestIds.GAM_BANNER} //test ad id can be replaced with the actual id
-      sizes={[BannerAdSize.MEDIUM_RECTANGLE]}
-      requestOptions={{
-        requestNonPersonalizedAdsOnly: true,
-      }}
-    />
-  </View>
-);
-const App = () => {
-  // const adUnitId = 'ca-app-pub-2230858590016652/9975408115'; //actual ad id
-
+const App: React.FC = () => {
   // Function to render each item (card or ad)
-  const renderItem = ({item, index}: any) => {
+  const renderItem = ({item, index}: {item: CardProps; index: number}) => {
     if ((index + 1) % 8 === 0) {
       // If the index is a multiple of 8 (every 7 cards), render the ad
-      return <AdCard />;
+      return <AdCard key={`ad-${index}`} />;
     } else {
       // Otherwise, render the card with data
-      return <Card name={item.name} address={item.address} />;
+      return (
+        <Card key={`card-${index}`} name={item.name} address={item.address} />
+      );
     }
   };
 
@@ -44,34 +24,11 @@ const App = () => {
         <FlatList
           data={fakeData}
           renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()} // Add this keyExtractor
+          keyExtractor={(_, index) => `item-${index}`}
         />
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    height: 80,
-    width: '100%',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  address: {
-    fontSize: 14,
-    color: '#888',
-  },
-  adStyle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default App;
