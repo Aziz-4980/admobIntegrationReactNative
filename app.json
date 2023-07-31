@@ -1,4 +1,9 @@
 {
   "name": "testingadmob",
-  "displayName": "testingadmob"
+  "displayName": "testingadmob",
+  "react-native-google-mobile-ads": {
+    "ios_app_id": "ca-app-pub-2230858590016652~2243439511"
+  
 }
+}
+
